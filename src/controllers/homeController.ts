@@ -4,7 +4,22 @@ import { Product } from '../models/Product';
 import  User  from '../models/User';
 
 export const home = async (req: Request, res: Response)=>{
-    let users = await User.find({})
+    let users = await User.find({
+        $or: [
+            {
+                email: {
+                    $regex: '@teste.com$',
+                }
+            },
+            {
+                age: {
+                    $gt: 18,
+                    $lt: 30
+                }
+            }
+        ]
+    }).sort({age: 1})
+    
     console.log(users)
     let age: number = 90;
     let showOld: boolean = false;
