@@ -1,0 +1,25 @@
+<form action="{{formAction}}" method="POST">
+    <input type="hidden" name="id" value="{{user.id}}">
+    
+    <div>
+        <label for="name">Nome:</label>
+        <input type="text" id="name" name="name" value="{{user.name}}" required>
+    </div>
+    
+    <div>
+        <label for="email">E-mail:</label>
+        <input type="email" id="email" name="email" value="{{user.email}}" required>
+    </div>
+    
+    <div>
+        <label for="username">Usuário:</label>
+        <input type="text" id="username" name="username" value="{{user.username}}" required>
+    </div>
+    
+    <div>
+        <label for="password">Senha:</label>
+        <input type="password" id="password" name="password" {{#isEdit}}placeholder="Deixe em branco para não alterar"{{/isEdit}}>
+    </div>
+    
+    <button type="submit">{{submitLabel}}</button>
+</form>

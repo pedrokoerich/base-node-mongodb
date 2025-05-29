@@ -1,38 +1,51 @@
 {{>partials/header}}
 
-Opa {{name}} {{lastName}}, tudo bem?
-{{#showOld}}
-    Como vai a vida?
-{{/showOld}}
-{{^showOld}}
-    Beleza?
-{{/showOld}}
+<body>
+    <h1>Cadastro de Usuários</h1>
+    <hr/>
 
-<hr/>
-<h2>Produtos</h2>
-<ul>
-    {{#products}}
-        {{>partials/productItem}}
-    {{/products}}
-</ul>
+    <div style="margin-bottom: 20px;">
+        <a href="/users/new">
+            <button type="button">Incluir Usuário</button>
+        </a>
+    </div>
 
-<hr/>
-<h2>Produtos a partir de R$ 12</h2>
-<ul>
-    {{#expensives}}
-        {{>partials/productItem}}
-    {{/expensives}}
-</ul>
-
-<hr/>
-
-<ul>
-    {{#frasesDoDia}}
-        <li>{{.}}</li>
-    {{/frasesDoDia}}
-    {{^frasesDoDia}}
-        Não há frases motivacionais hoje.
-    {{/frasesDoDia}}
-</ul>
+    <h3>Lista de Usuários</h3>
+    <table border="1" cellpadding="5" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Sobrenome</th>
+                <th>Idade</th>
+                <th>Email</th>
+                <th>Interesses</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#users}}
+            <tr>
+                <td>{{name.firstName}}</td>
+                <td>{{name.lastName}}</td>
+                <td>{{age}}</td>
+                <td>{{email}}</td>
+                <td>{{interests}}</td>
+                <td>
+                    <a href="/users/edit/{{_id}}">
+                        <button type="button">
+                            <span style="font-size:16px;">&#9998;</span>
+                        </button>
+                    </a>
+                    <form action="/users/delete/{{_id}}" method="POST" style="display:inline;">
+                        <button type="submit" onclick="return confirm('Tem certeza que deseja excluir?')">
+                            <span style="font-size:16px; color:red;">&#128465;</span>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {{/users}}
+        </tbody>
+    </table>
+</body>
 
 {{>partials/footer}}

@@ -1,32 +1,37 @@
 import { Request, Response } from 'express';
+import User from '../models/User';
 
-export const nome = (req: Request, res: Response) => {
-    let nome: string = req.query.nome as string;
-    let idade: string = req.query.idade as string;
+export const createUser = async (req: Request, res: Response) => {
+    let user = new User();
 
-    res.render('pages/nome', {
-        nome,
-        idade
-    });
+    user.name.firstName = req.body.firstName;
+    user.name.lastName = req.body.lastName;
+    user.email = req.body.email;
+    user.age = parseInt(req.body.age);
+    user.interests = req.body.interests ? req.body.interests.split(',') : [];
+    await user.save();
+    
+    res.redirect('/');
 };
 
-export const idadeForm = (req: Request, res: Response) => {
-    res.render('pages/idade');
-};
+export const updateUser = async (req: Request, res: Response) => {
+    let user = await User.findById(req.body.id);
 
-export const idadeAction = (req: Request, res: Response) => {
-    let mostrarIdade: boolean = false;
-    let idade: number = 0;
-
-    if(req.body.ano) {
-        let anoNascimento: number = parseInt(req.body.ano as string);
-        let anoAtual: number = new Date().getFullYear();
-        idade = anoAtual - anoNascimento;
-        mostrarIdade = true;
+    if (user) {
+        user.name.firstName = req.body.firstName;
+        user.name.lastName = req.body.lastName;
+        user.email = req.body.email;
+        user.age = parseInt(req.body.age);
+        user.interests = req.body.interests ? req.body.interests.split(',') : [];
+        await user.save();
     }
 
-    res.render('pages/idade', {
-        idade,
-        mostrarIdade
-    });
+    res.redirect('/');
+}
+
+export const deleteUser = async (req: Request, res: Response) => {
+    await User.findByIdAndDelete(req.body.id);
+
+    res.redirect('/');
 };
+
