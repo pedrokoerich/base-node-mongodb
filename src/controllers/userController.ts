@@ -14,6 +14,15 @@ export const createUser = async (req: Request, res: Response) => {
     res.redirect('/');
 };
 
+export const editUser = async (req: Request, res: Response) => {
+    let user = await User.findById(req.params.id);
+    if (user) {
+        res.render('pages/userEdit', { user });
+    } else {
+        res.status(404).send('User not found');
+    }
+}
+
 export const updateUser = async (req: Request, res: Response) => {
     let user = await User.findById(req.body.id);
 

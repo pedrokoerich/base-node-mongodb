@@ -8,6 +8,7 @@ const router = Router();
 router.get('/', HomeController.home);
 router.post('/users', UserController.createUser);
 router.put('/users', UserController.updateUser);
+router.get('/users/edit/:id', UserController.editUser);
 router.delete('/users', UserController.deleteUser);
 
 export default router;
