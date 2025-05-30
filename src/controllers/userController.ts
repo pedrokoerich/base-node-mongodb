@@ -1,45 +1,36 @@
 import { Request, Response } from 'express';
 import User from '../models/User';
 
-export const createUser = async (req: Request, res: Response) => {
-    let user = new User();
+export const upsertUser = async (req: Request, res: Response) => {
+    // Se o campo de interesses estiver vazio, usa o backup
+    let interestsString = req.body.interests && req.body.interests.trim() !== ''
+        ? req.body.interests
+        : req.body.originalInterests || '';
 
-    user.name.firstName = req.body.firstName;
-    user.name.lastName = req.body.lastName;
-    user.email = req.body.email;
-    user.age = parseInt(req.body.age);
-    user.interests = req.body.interests ? req.body.interests.split(',') : [];
-    await user.save();
-    
+    const filter = req.body.id ? { _id: req.body.id } : { email: req.body.email };
+    const update = {
+        name: {
+            firstName: req.body.firstName,
+            lastName: req.body.lastName
+        },
+        email: req.body.email,
+        age: parseInt(req.body.age),
+        interests: interestsString
+            ? interestsString.split(',').map((i: string) => i.trim()).filter((i: string) => i)
+            : []
+    };
+
+    await User.findOneAndUpdate(filter, update, { upsert: true, new: true, setDefaultsOnInsert: true });
     res.redirect('/');
 };
 
 export const editUser = async (req: Request, res: Response) => {
     let user = await User.findById(req.params.id);
-    if (user) {
-        res.render('pages/userEdit', { user });
-    } else {
-        res.status(404).send('User not found');
-    }
-}
-
-export const updateUser = async (req: Request, res: Response) => {
-    let user = await User.findById(req.body.id);
-
-    if (user) {
-        user.name.firstName = req.body.firstName;
-        user.name.lastName = req.body.lastName;
-        user.email = req.body.email;
-        user.age = parseInt(req.body.age);
-        user.interests = req.body.interests ? req.body.interests.split(',') : [];
-        await user.save();
-    }
-
-    res.redirect('/');
+    res.render('pages/userEdit', { user });
 }
 
 export const deleteUser = async (req: Request, res: Response) => {
-    await User.findByIdAndDelete(req.body.id);
+    await User.findByIdAndDelete(req.params.id);
 
     res.redirect('/');
 };
